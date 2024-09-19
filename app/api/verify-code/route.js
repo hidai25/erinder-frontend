@@ -19,7 +19,7 @@ export async function POST(request) {
 
         if (!verificationRecord) {
             // If no record is found or the code is incorrect
-            // console.log(`Verification failed: No matching record found for the provided email and code.`);
+            console.log(`Verification failed: No matching record found for the provided email and code.`);
             return NextResponse.json({ error: 'Invalid verification code.' }, { status: 400 });
         }
 
