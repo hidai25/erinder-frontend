@@ -166,4 +166,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+<<<<<<< HEAD
 >>>>>>> d3cf6f4 (Initial commit from Create Next App)
+=======
+.env.local
+>>>>>>> cb98bcf (Initial commit)

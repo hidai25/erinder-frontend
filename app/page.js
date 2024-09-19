@@ -1,113 +1,158 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+import Link from 'next/link';
+
+export default function HomePage() {
+    return (
+        <div className="min-h-screen bg-gradient-to-r from-blue-900 via-black to-purple-900 text-white flex flex-col">
+            {/* Navigation Bar */}
+            <header className="w-full py-5 flex justify-between items-center px-12 fixed top-0 bg-opacity-50 bg-black shadow-lg backdrop-blur-md z-50">
+                {/* Left side of the navbar */}
+                <div className="flex space-x-8">
+                    <Link href="/" className="hover:text-gray-300 transition duration-300">Blog</Link>
+                    <Link href="/" className="hover:text-gray-300 transition duration-300">Help</Link>
+                    <Link href="/" className="hover:text-gray-300 transition duration-300">Community</Link>
+                </div>
+
+                {/* App Name with Stylish Font and Gradient */}
+                <div className="text-3xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-purple-500">
+                    Erinder
+                </div>
+
+                {/* Right side of the navbar */}
+                <div className="flex space-x-6">
+                    <Link href="/auth/signin" className="px-6 py-2 border border-white rounded-full hover:bg-white hover:text-black transition duration-300">
+                        Sign In
+                    </Link>
+                    <Link href="/auth/signup" className="px-6 py-2 bg-gradient-to-r from-pink-500 to-yellow-500 rounded-full hover:opacity-80 transition duration-300">
+                        Create Account
+                    </Link>
+                </div>
+            </header>
+
+            {/* Main Content */}
+            <main className="w-full max-w-6xl mx-auto px-4 py-32 flex flex-col items-center flex-grow">
+                {/* Hero Section */}
+                <section className="w-full text-center mb-24">
+                    <h1 className="text-6xl font-extrabold mb-6">
+                        Meet Your Personal <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">Task Manager</span>
+                    </h1>
+                    <p className="text-lg text-gray-300">Stay organized and keep your life on track with our cutting-edge reminder and task management system.</p>
+                </section>
+
+                {/* Animated Avatar or Background */}
+                <section className="w-full h-[400px] mb-24 bg-cover bg-center rounded-xl shadow-2xl relative overflow-hidden" style={{ backgroundImage: "url('/your-avatar-image.gif')" }}>
+                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                        <h2 className="text-4xl font-bold text-white">Your AI Assistant Awaits</h2>
+                    </div>
+                </section>
+
+                {/* Features Section */}
+                <section className="w-full text-center mb-24">
+                    <h2 className="text-4xl font-semibold mb-6">Features</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="bg-black bg-opacity-60 p-6 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+                            <h3 className="text-2xl font-bold mb-4">Smart Reminders</h3>
+                            <p className="text-gray-300">Never miss important events with smart, customizable reminders.</p>
+                        </div>
+                        <div className="bg-black bg-opacity-60 p-6 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+                            <h3 className="text-2xl font-bold mb-4">Advanced Task Management</h3>
+                            <p className="text-gray-300">Organize your tasks efficiently with AI-driven suggestions.</p>
+                        </div>
+                        <div className="bg-black bg-opacity-60 p-6 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+                            <h3 className="text-2xl font-bold mb-4">Collaborative Features</h3>
+                            <p className="text-gray-300">Work together seamlessly with task sharing and team collaboration.</p>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Pricing Section */}
+                <section className="w-full text-center mb-24">
+                    <h2 className="text-4xl font-semibold mb-6">Pricing Plans</h2>
+                    <div className="flex flex-col md:flex-row justify-center space-y-6 md:space-y-0 md:space-x-8">
+                        <div className="bg-black bg-opacity-60 p-6 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+                            <h3 className="text-2xl font-bold mb-2">Basic Plan</h3>
+                            <p className="text-xl">$5/month</p>
+                            <p className="text-sm text-gray-400">Essential features for personal use.</p>
+                        </div>
+                        <div className="bg-black bg-opacity-60 p-6 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+                            <h3 className="text-2xl font-bold mb-2">Premium Plan</h3>
+                            <p className="text-xl">$10/month</p>
+                            <p className="text-sm text-gray-400">Full suite of features for power users.</p>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Testimonials Section */}
+                <section className="w-full text-center mb-24">
+                    <h2 className="text-4xl font-semibold mb-6">What Our Users Say</h2>
+                    <div className="flex flex-col md:flex-row justify-center space-y-6 md:space-y-0 md:space-x-8">
+                        <div className="bg-black bg-opacity-60 p-6 rounded-lg shadow-lg">
+                            <p className="text-gray-300">"A game-changer in task management. I feel more organized than ever!"</p>
+                            <span className="block mt-4 font-bold">- Emily</span>
+                        </div>
+                        <div className="bg-black bg-opacity-60 p-6 rounded-lg shadow-lg">
+                            <p className="text-gray-300">"The AI assistant is incredibly helpful. Highly recommended!"</p>
+                            <span className="block mt-4 font-bold">- David</span>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            {/* Footer */}
+            <footer className="w-full bg-black text-white py-10">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        {/* About */}
+                        <div>
+                            <h4 className="text-lg font-semibold mb-4">About Erinder</h4>
+                            <ul className="space-y-2">
+                                <li><Link href="#" className="hover:underline">Our Story</Link></li>
+                                <li><Link href="#" className="hover:underline">Press & Media</Link></li>
+                            </ul>
+                        </div>
+
+                        {/* Help & Support */}
+                        <div>
+                            <h4 className="text-lg font-semibold mb-4">Help & Support</h4>
+                            <ul className="space-y-2">
+                                <li><Link href="#" className="hover:underline">Help Center</Link></li>
+                                <li><Link href="#" className="hover:underline">Contact Us</Link></li>
+                            </ul>
+                        </div>
+
+                        {/* Join Our Community */}
+                        <div>
+                            <h4 className="text-lg font-semibold mb-4">Join Our Community</h4>
+                            <ul className="space-y-2">
+                                <li><Link href="#" className="hover:underline">Reddit</Link></li>
+                                <li><Link href="#" className="hover:underline">Discord</Link></li>
+                                <li><Link href="#" className="hover:underline">Facebook</Link></li>
+                            </ul>
+                        </div>
+
+                        {/* Get the App */}
+                        <div>
+                            <h4 className="text-lg font-semibold mb-4">Get the App</h4>
+                            <ul className="space-y-2">
+                                <li><Link href="#" className="hover:underline">iOS</Link></li>
+                                <li><Link href="#" className="hover:underline">Android</Link></li>
+                                <li><Link href="#" className="hover:underline">Oculus</Link></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="mt-10 text-center text-sm text-gray-400">
+                        <p>Copyright © 2024 Hidai Bar-Mor. All rights reserved.</p>
+                        <p className="mt-2">
+                            <Link href="#" className="hover:underline">Terms of Service</Link> | 
+                            <Link href="#" className="hover:underline ml-2">Privacy Policy</Link> | 
+                            <Link href="#" className="hover:underline ml-2">Cookies Policy</Link> | 
+                            <Link href="#" className="hover:underline ml-2">Cookie Settings</Link>
+                        </p>
+                    </div>
+                </div>
+            </footer>
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    );
 }
