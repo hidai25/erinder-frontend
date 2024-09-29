@@ -69,7 +69,7 @@ export default function Verify() {
 
             setSuccess(true);
             setTimeout(() => {
-                router.push('/auth/signin'); // Redirect to sign-in page
+                router.push('/auth/create-profile'); // Redirect to creat-profile page
             }, 2000);
         } catch (err) {
             setError('Invalid verification code.');

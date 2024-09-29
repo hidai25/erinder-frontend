@@ -1,15 +1,20 @@
 import { hash } from 'bcryptjs';
-import clientPromise from '../../lib/mongodb'; // Adjust the path to your MongoDB connection
-import sendMail from '../../lib/sendMail'; // Import the new sendMail function
+import clientPromise from '../../lib/mongodb';
+import sendMail from '../../lib/sendMail';
 
 export async function POST(request) {
     try {
         // Parse the incoming request body
         const { email, password, name, householdName, familyMembers } = await request.json();
 
+        // Validate required fields
+        if (!email || !password || !name) {
+            return new Response(JSON.stringify({ message: 'Missing required fields' }), { status: 400 });
+        }
+
         // Connect to MongoDB
         const client = await clientPromise;
-        const db = client.db('erinder'); // Replace 'erinder' with your actual database name
+        const db = client.db('erinder');
 
         // Check if the user already exists
         const existingUser = await db.collection('users').findOne({ email });
@@ -25,31 +30,37 @@ export async function POST(request) {
             email,
             password: hashedPassword,
             name,
-            householdName,
-            familyMembers: familyMembers.map(member => ({
-                name: member.name,
+            householdName: householdName || '',
+            familyMembers: Array.isArray(familyMembers) ? familyMembers.map(member => ({
+                name: member.name || '',
                 age: member.age || null,
                 picture: member.picture || null
-            })),
-            verified: false, // Add verified field to mark the user's verification status
+            })) : [],
+            verified: false,
         };
 
         // Insert the new user into the users collection
         await db.collection('users').insertOne(newUser);
 
         // Generate a verification code
-        const verificationCode = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit verification code
+        const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
         // Store the verification code in the database
         await storeVerificationCodeInDB(email, verificationCode);
 
-        // Send the verification email using the sendMail function (Gmail OAuth2)
-        await sendMail(
-            email,
-            'Your Verification Code',
-            `Your verification code is ${verificationCode}`,
-            `<p>Your verification code is: <b>${verificationCode}</b></p>`
-        );
+        // Send the verification email
+        try {
+            await sendMail(
+                email,
+                'Your Verification Code',
+                `Your verification code is ${verificationCode}`,
+                `<p>Your verification code is: <b>${verificationCode}</b></p>`
+            );
+        } catch (emailError) {
+            console.error('Error sending verification email:', emailError);
+            // Consider how you want to handle email sending failures
+            // For now, we'll continue with the signup process
+        }
 
         // Return a success response
         return new Response(JSON.stringify({ message: 'User created successfully. Verification code sent.' }), { status: 201 });
@@ -62,8 +73,7 @@ export async function POST(request) {
 // Function to store the verification code in MongoDB
 async function storeVerificationCodeInDB(email, code) {
     const client = await clientPromise;
-    const db = client.db('erinder'); // Use your correct database name
-
+    const db = client.db('erinder');
     await db.collection('verificationCodes').insertOne({
         email,
         code,

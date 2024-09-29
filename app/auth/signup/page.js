@@ -8,11 +8,9 @@ export default function SignUp() {
     const router = useRouter();
     const [formData, setFormData] = useState({
         name: '',
-        householdName: '',
         email: '',
         password: '',
         confirmPassword: '',
-        familyMembers: [{ name: '', age: '', picture: '' }]
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -58,31 +56,6 @@ export default function SignUp() {
             number: /\d/.test(password),
             special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
         });
-    };
-
-    const handleFamilyMemberChange = (index, field, value) => {
-        const updatedMembers = [...formData.familyMembers];
-        updatedMembers[index][field] = value;
-        setFormData(prev => ({ ...prev, familyMembers: updatedMembers }));
-    };
-
-    const addFamilyMember = () => {
-        setFormData(prev => ({
-            ...prev,
-            familyMembers: [...prev.familyMembers, { name: '', age: '', picture: '' }]
-        }));
-    };
-
-    const handleImageChange = (index, file) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const updatedMembers = [...formData.familyMembers];
-            updatedMembers[index].picture = reader.result;
-            setFormData(prev => ({ ...prev, familyMembers: updatedMembers }));
-        };
-        if (file) {
-            reader.readAsDataURL(file);
-        }
     };
 
     const handleSubmit = async (e) => {
@@ -138,15 +111,6 @@ export default function SignUp() {
                         value={formData.name}
                         onChange={handleInputChange}
                         placeholder="Full Name"
-                        className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
-                    />
-                    <input
-                        name="householdName"
-                        type="text"
-                        required
-                        value={formData.householdName}
-                        onChange={handleInputChange}
-                        placeholder="Household Name"
                         className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
                     />
                     <input
@@ -207,48 +171,6 @@ export default function SignUp() {
                         </button>
                     </div>
 
-                    <div>
-                        <h3 className="text-lg font-bold text-gray-900">Family Members</h3>
-                        {formData.familyMembers.map((member, index) => (
-                            <div key={index} className="space-y-2 mt-4">
-                                <input
-                                    type="text"
-                                    value={member.name}
-                                    onChange={(e) => handleFamilyMemberChange(index, 'name', e.target.value)}
-                                    placeholder={`Family Member ${index + 1} Name`}
-                                    className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
-                                />
-                                <input
-                                    type="number"
-                                    value={member.age}
-                                    onChange={(e) => handleFamilyMemberChange(index, 'age', e.target.value)}
-                                    placeholder="Age (optional)"
-                                    className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
-                                />
-                                <label className="block text-sm font-medium text-gray-700">Upload Photo (optional)</label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => handleImageChange(index, e.target.files[0])}
-                                    className="block w-full text-sm text-gray-500"
-                                />
-                                {member.picture && (
-                                    <img src={member.picture} alt={`Family Member ${index + 1}`} className="mt-2 w-16 h-16 rounded-full object-cover" />
-                                )}
-                            </div>
-                        ))}
-                        <button
-                            type="button"
-                            onClick={addFamilyMember}
-                            className="mt-2 text-green-500 hover:text-green-700"
-                        >
-                            + Add Another Family Member
-                        </button>
-                    </div>
-
-                    <p className="text-xs text-gray-500 text-center mt-4">
-                        By signing up, you agree to our <a href="#" className="underline">Terms of Use</a> and <a href="#" className="underline">Privacy Policy</a>.
-                    </p>
                     <button
                         type="submit"
                         className="w-full py-2 px-4 text-white bg-gradient-to-r from-green-500 to-teal-500 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
