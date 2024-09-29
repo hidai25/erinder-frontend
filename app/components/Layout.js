@@ -1,14 +1,12 @@
+// components/Layout.js
 'use client';
-
-import { useSession } from 'next-auth/react'; // Correctly import useSession
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 export default function Layout({ children }) {
-    const { data: session } = useSession(); // Fetch session data to determine if user is logged in
-
+    const { data: session } = useSession();
     return (
         <div>
-            {/* Conditionally render the navigation menu if the user is authenticated */}
             {session && (
                 <nav className="bg-gray-800 p-4">
                     <ul className="flex space-x-4">
@@ -27,11 +25,14 @@ export default function Layout({ children }) {
                                 Task Management
                             </Link>
                         </li>
+                        <li>
+                            <Link href="/dashboard/mealplanner" className="text-white hover:underline">
+                                Meal Planner
+                            </Link>
+                        </li>
                     </ul>
                 </nav>
             )}
-
-            {/* Main Content */}
             <main className="p-4">{children}</main>
         </div>
     );

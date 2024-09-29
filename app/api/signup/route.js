@@ -1,7 +1,6 @@
-// app/api/signup/route.js
 import { hash } from 'bcryptjs';
 import clientPromise from '../../lib/mongodb'; // Adjust the path to your MongoDB connection
-import nodemailer from 'nodemailer';
+import sendMail from '../../lib/sendMail'; // Import the new sendMail function
 
 export async function POST(request) {
     try {
@@ -44,28 +43,13 @@ export async function POST(request) {
         // Store the verification code in the database
         await storeVerificationCodeInDB(email, verificationCode);
 
-        // Configure Nodemailer transporter for Hotmail
-        const transporter = nodemailer.createTransport({
-            host: 'smtp-mail.outlook.com',
-            port: 587,
-            secure: false,
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-            },
-            tls: {
-                ciphers: 'SSLv3',
-            },
-        });
-
-        // Send the verification email
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Your Verification Code',
-            text: `Your verification code is ${verificationCode}`,
-            html: `<p>Your verification code is: <b>${verificationCode}</b></p>`,
-        });
+        // Send the verification email using the sendMail function (Gmail OAuth2)
+        await sendMail(
+            email,
+            'Your Verification Code',
+            `Your verification code is ${verificationCode}`,
+            `<p>Your verification code is: <b>${verificationCode}</b></p>`
+        );
 
         // Return a success response
         return new Response(JSON.stringify({ message: 'User created successfully. Verification code sent.' }), { status: 201 });

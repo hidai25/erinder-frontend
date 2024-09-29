@@ -1,25 +1,63 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 export default function SignUp() {
     const router = useRouter();
     const [formData, setFormData] = useState({
+        name: '',
+        householdName: '',
         email: '',
         password: '',
         confirmPassword: '',
-        name: '',
-        householdName: '',
         familyMembers: [{ name: '', age: '', picture: '' }]
     });
     const [error, setError] = useState('');
-    const [verificationSent, setVerificationSent] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [passwordRequirements, setPasswordRequirements] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false
+    });
+    const [showRequirements, setShowRequirements] = useState(false);
+
+    useEffect(() => {
+        if (formData.password && !showRequirements) {
+            setShowRequirements(true);
+        }
+
+        if (Object.values(passwordRequirements).every(Boolean)) {
+            const timer = setTimeout(() => {
+                setShowRequirements(false);
+            }, 1000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [passwordRequirements, formData.password]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+
+        if (name === 'password') {
+            checkPasswordRequirements(value);
+        }
+    };
+
+    const checkPasswordRequirements = (password) => {
+        setPasswordRequirements({
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /\d/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        });
     };
 
     const handleFamilyMemberChange = (index, field, value) => {
@@ -47,27 +85,16 @@ export default function SignUp() {
         }
     };
 
-    const sendVerificationCode = async () => {
-        try {
-            const res = await fetch('/api/send-verification', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: formData.email }),
-            });
-
-            if (!res.ok) throw new Error(await res.text());
-            
-            setVerificationSent(true);
-        } catch (err) {
-            setError('Failed to send verification code. Please try again.');
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match!');
+            return;
+        }
+
+        if (!Object.values(passwordRequirements).every(Boolean)) {
+            setError('Please ensure your password meets all the requirements.');
             return;
         }
 
@@ -81,14 +108,12 @@ export default function SignUp() {
                 body: JSON.stringify(formData),
             });
 
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || 'An error occurred during sign-up');
+            }
 
             localStorage.setItem('email', formData.email);
-            
-            if (!verificationSent) {
-                await sendVerificationCode();
-            }
-            
             router.push('/auth/verify');
         } catch (err) {
             setError(err.message);
@@ -133,24 +158,54 @@ export default function SignUp() {
                         placeholder="Email"
                         className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
                     />
-                    <input
-                        name="password"
-                        type="password"
-                        required
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        placeholder="Password"
-                        className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
-                    />
-                    <input
-                        name="confirmPassword"
-                        type="password"
-                        required
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        placeholder="Confirm Password"
-                        className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
-                    />
+                    <div className="relative">
+                        <input
+                            name="password"
+                            type={showPassword ? "text" : "password"}
+                            required
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            placeholder="Password"
+                            className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-600 hover:text-gray-900"
+                        >
+                            {showPassword ? "Hide" : "Show"}
+                        </button>
+                    </div>
+                    {showRequirements && (
+                        <div className="text-sm">
+                            <p>Password must contain:</p>
+                            <ul className="list-disc pl-5">
+                                <li className={passwordRequirements.length ? "text-green-500" : "text-red-500"}>At least 8 characters</li>
+                                <li className={passwordRequirements.uppercase ? "text-green-500" : "text-red-500"}>At least one uppercase letter</li>
+                                <li className={passwordRequirements.lowercase ? "text-green-500" : "text-red-500"}>At least one lowercase letter</li>
+                                <li className={passwordRequirements.number ? "text-green-500" : "text-red-500"}>At least one number</li>
+                                <li className={passwordRequirements.special ? "text-green-500" : "text-red-500"}>At least one special character</li>
+                            </ul>
+                        </div>
+                    )}
+                    <div className="relative">
+                        <input
+                            name="confirmPassword"
+                            type={showConfirmPassword ? "text" : "password"}
+                            required
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange}
+                            placeholder="Confirm Password"
+                            className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-600 hover:text-gray-900"
+                        >
+                            {showConfirmPassword ? "Hide" : "Show"}
+                        </button>
+                    </div>
 
                     <div>
                         <h3 className="text-lg font-bold text-gray-900">Family Members</h3>
@@ -202,6 +257,28 @@ export default function SignUp() {
                         {loading ? 'Signing Up...' : 'Sign Up'}
                     </button>
                 </form>
+
+                {/* Social login buttons */}
+                <div className="mt-6">
+                    <button
+                        onClick={() => signIn('apple')}
+                        className="w-full py-2 px-4 mb-3 text-white bg-black rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none"
+                    >
+                        Continue with Apple
+                    </button>
+                    <button
+                        onClick={() => signIn('facebook')}
+                        className="w-full py-2 px-4 mb-3 text-white bg-blue-600 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none"
+                    >
+                        Continue with Facebook
+                    </button>
+                    <button
+                        onClick={() => signIn('google')}
+                        className="w-full py-2 px-4 text-white bg-red-600 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none"
+                    >
+                        Continue with Google
+                    </button>
+                </div>
 
                 <p className="text-sm text-center text-gray-700">
                     Already have an account?{' '}

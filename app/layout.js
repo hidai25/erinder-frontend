@@ -2,6 +2,7 @@
 
 import { SessionProvider } from 'next-auth/react'; // Import SessionProvider from next-auth
 import './globals.css'; // Import global styles
+import DndProviderWrapper from './components/DndProvider'; // Import DndProviderWrapper
 
 export default function RootLayout({ children }) {
     return (
@@ -10,9 +11,11 @@ export default function RootLayout({ children }) {
                 <title>Reminder & Task Management App</title>
             </head>
             <body>
-                {/* Wrap the entire application with SessionProvider */}
+                {/* Wrap the entire application with SessionProvider and DndProviderWrapper */}
                 <SessionProvider>
-                    {children}
+                    <DndProviderWrapper>
+                        {children}
+                    </DndProviderWrapper>
                 </SessionProvider>
             </body>
         </html>

@@ -34,11 +34,20 @@ export default function Verify() {
         }
     };
 
-    // Handles backspace key for navigating back
+    // Handles backspace key for navigating back and clearing input
     const handleKeyDown = (e, index) => {
-        if (e.key === 'Backspace' && code[index] === '') {
-            if (index > 0) {
-                inputRefs.current[index - 1]?.focus();
+        if (e.key === 'Backspace') {
+            const updatedCode = [...code];
+            
+            if (code[index] === '') {
+                // If the current input is empty, move to the previous input
+                if (index > 0) {
+                    inputRefs.current[index - 1]?.focus();
+                }
+            } else {
+                // Clear the current input and stay on the same input
+                updatedCode[index] = '';
+                setCode(updatedCode);
             }
         }
     };
