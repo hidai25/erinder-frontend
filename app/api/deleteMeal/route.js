@@ -1,4 +1,3 @@
-// app/api/deleteMeal/route.js
 import mongoose from 'mongoose';
 import Meal from '../../models/Meal';
 
@@ -13,28 +12,38 @@ mongoose.connect(connectionString).then(() => {
 });
 
 export async function DELETE(req) {
+    console.log('DELETE request received');
     try {
-        // Parse the URL to get the ID of the meal to delete
-        const { searchParams } = new URL(req.url);
-        const id = searchParams.get('id');
+        const body = await req.json();
+        console.log('Received body:', body);
+        const { id } = body;
 
         if (!id) {
+            console.log('No ID provided');
             return new Response(JSON.stringify({ error: 'Meal ID is required' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' },
             });
         }
 
+        console.log('Attempting to delete meal with ID:', id);
+        
+        // Log all meals in the database
+        const allMeals = await Meal.find({});
+        console.log('All meals in database:', allMeals.map(meal => ({ id: meal._id, title: meal.title })));
+
         // Find and delete the meal by its ID
         const deletedMeal = await Meal.findByIdAndDelete(id);
 
         if (!deletedMeal) {
+            console.log('Meal not found');
             return new Response(JSON.stringify({ error: 'Meal not found' }), {
                 status: 404,
                 headers: { 'Content-Type': 'application/json' },
             });
         }
 
+        console.log('Meal deleted successfully:', deletedMeal);
         // Respond with a success message
         return new Response(JSON.stringify({ message: 'Meal deleted successfully' }), {
             status: 200,

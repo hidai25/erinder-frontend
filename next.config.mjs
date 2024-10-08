@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-import 'dotenv/config';
-
-export default nextConfig;
+const nextConfig = {
+    images: {
+      unoptimized: true,
+      domains: ['localhost'],
+    },
+  };
+  
+  import 'dotenv/config';
+  
+  export default nextConfig;
