@@ -1,15 +1,14 @@
-import mongoose from 'mongoose';
-import Meal from '../../models/Meal';
 import clientPromise from '../../lib/mongodb';
 
 export async function GET() {
     try {
         console.log('Connecting to MongoDB...');
-        await clientPromise;
+        const client = await clientPromise;
+        const db = client.db('erinder'); // Replace 'erinder' with your actual database name
         console.log('MongoDB connection established');
-
+        
         console.log('Fetching meals...');
-        const meals = await Meal.find().lean();
+        const meals = await db.collection('meals').find({}).toArray();
         console.log(`Fetched ${meals.length} meals`);
         
         if (meals.length === 0) {
@@ -18,7 +17,7 @@ export async function GET() {
             console.log('Fetched meal IDs:', meals.map(meal => meal._id));
             console.log('Sample meal:', JSON.stringify(meals[0], null, 2));
         }
-
+        
         return new Response(JSON.stringify(meals), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
